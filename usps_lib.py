@@ -2,11 +2,14 @@ import urllib, urllib2, sys
 from bs4 import BeautifulSoup
 
 def FindAddress(input_st_name, input_st_num, input_city, input_zip):
-    streetAddressSpaces = str(input_st_num) + ' ' + str(input_st_name)
+    """
+    Webscrape the USPS site to determine if the given address is a valid address
+    """
+    streetAddressSpaces = '{0} {1}'.format(str(input_st_num), str(input_st_name))
     streetAddress = streetAddressSpaces.replace(' ','+')
     city = input_city
     zipcode = str(input_zip)
-    url = "https://tools.usps.com/go/ZipLookupResultsAction!input.action?resultMode=0&companyName=&address1=" + streetAddress + "&address2=&city=" + city + "&state=Select&urbanCode=&postalCode=&zip=" + zipcode
+    url = "https://tools.usps.com/go/ZipLookupResultsAction!input.action?resultMode=0&companyName=&address1={0}&address2=&city={1}&state=Select&urbanCode=&postalCode=&zip={2}".format(streetAddress, city, zipcode)
     results = urllib.urlopen(url)
     
     #create file object with response HTML
@@ -15,9 +18,9 @@ def FindAddress(input_st_name, input_st_num, input_city, input_zip):
     
     #extract resulting street address, city, state, and zipcode
     if sys.platform == 'win32':
-        soup = BeautifulSoup(open("C:/Documents and Settings/schristensen/My Documents/Python/Address_Validation/results_test.html"))
+        soup = BeautifulSoup(open("C:/DjangoProjects/WebMap/scripts/results_test.html"))
     else:
-        soup = BeautifulSoup(open("/var/www/DjangoProjects/WebMap/scripts/results_test.html"))
+        soup = BeautifulSoup(open("/opt/DjangoProjects/WebMap/scripts/results_test.html"))
     
     #extract street address
     streetAddressResultTag = soup.find("span", class_="address1 range")
